@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fruit Catch Game</title>
+    <style>
+        body{
+            margin:0;
+            font-family:Arial;
+            background:linear-gradient(to right, #74ebd5, #ACB6E5);
+            text-align:center;
+        }
+
+        h1{
+            color:white;
+            padding-top:20px;
+            font-size:45px;
+        }
+
+        #gameArea{
+            width:900px;
+            height:500px;
+            margin:auto;
+            background:white;
+            border-radius:20px;
+            position:relative;
+            box-shadow:0 0 20px gray;
+            overflow:hidden;
+        }
+
+        #scoreBoard{
+            padding:20px;
+            font-size:22px;
+            font-weight:bold;
+        }
+
+        button{
+            padding:12px 25px;
+            font-size:20px;
+            background:#007bff;
+            color:white;
+            border:none;
+            border-radius:10px;
+            cursor:pointer;
+        }
+
+        img{
+            width:100px;
+            position:absolute;
+            cursor:pointer;
+        }
+
+        #appleImg{
+            left:100px;
+            top:200px;
+        }
+
+        #bananaImg{
+            left:300px;
+            top:200px;
+        }
+
+        #gameOverBox{
+            display:none;
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            background:black;
+            color:red;
+            padding:30px;
+            font-size:35px;
+            border:4px solid red;
+            border-radius:20px;
+            z-index:100;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🍎 Fruit Catch Game 🍌</h1>
+
+<button onclick="startGame()">Start Game</button>
+
+<div id="gameArea">
+
+    <div id="scoreBoard">
+        Apple: <span id="apple">0</span> |
+        Banana: <span id="banana">0</span> |
+        Time: <span id="timer">30</span> |
+        Taps: <span id="taps">0</span>
+    </div>
+
+    <img id="appleImg" src="Apple.jpeg" onclick="clickImage('apple')">
+    <img id="bananaImg" src="Banana.jpeg" onclick="clickImage('banana')">
+
+    <div id="gameOverBox">
+        <div id="resultText"></div>
+    </div>
+
+</div>
+
+<script>
+let time = 30;
+let taps = 0;
+let appleCount = 0;
+let bananaCount = 0;
+let interval;
+let gameStarted = false;
+
+function startGame(){
+    if(gameStarted) return;
+
+    gameStarted = true;
+    document.getElementById("gameOverBox").style.display = "none";
+
+    interval = setInterval(function(){
+
+        time--;
+        document.getElementById("timer").innerText = time;
+
+        if(time <= 0){
+            clearInterval(interval);
+            gameStarted = false;
+            showResult();
+        }
+
+    },1000);
+}
+
+function clickImage(type){
+    if(!gameStarted || time<=0) return;
+
+    taps++;
+    document.getElementById("taps").innerText = taps;
+
+    if(type==="apple"){
+        appleCount++;
+        document.getElementById("apple").innerText = appleCount;
+        moveRandom("appleImg");
+    }
+
+    if(type==="banana"){
+        bananaCount++;
+        document.getElementById("banana").innerText = bananaCount;
+        moveRandom("bananaImg");
+    }
+}
+
+function moveRandom(id){
+    let x = Math.floor(Math.random()*750);
+    let y = Math.floor(Math.random()*350);
+
+    document.getElementById(id).style.left = x + "px";
+    document.getElementById(id).style.top = y + "px";
+}
+
+function showResult(){
+    let winner;
+
+    if(appleCount > bananaCount){
+        winner = "🍎 Apple Wins!";
+    }
+    else if(bananaCount > appleCount){
+        winner = "🍌 Banana Wins!";
+    }
+    else{
+        winner = "🤝 Match Draw!";
+    }
+
+    document.getElementById("resultText").innerHTML =
+        "GAME OVER<br><br>" +
+        "Apple Score: " + appleCount + "<br>" +
+        "Banana Score: " + bananaCount + "<br><br>" +
+        winner;
+
+    document.getElementById("gameOverBox").style.display = "block";
+}
+</script>
+
+</body>
+</html>
